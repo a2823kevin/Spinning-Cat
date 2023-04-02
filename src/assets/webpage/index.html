@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://unpkg.com/three@0.150.1/build/three.module.js",
+                    "three/addons/": "https://unpkg.com/three@0.150.1/examples/jsm/"
+                }
+            }
+        </script>
+        <script src="index.js" type="module"></script>
+    </head>
+    <body>
+        <script>
+            setInterval(()=>{
+                $.ajax({
+                    type: "GET", 
+                    url: "get_model"
+                }).done(function(data) {
+                    if (data!=undefined) {
+                        load_model(data.obj_path, data.mtl_path);
+                    }
+                });
+            }, 1000);
+        </script>
+    </body>
+</html>

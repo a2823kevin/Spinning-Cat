@@ -1,0 +1,7 @@
+package-lock.json
+node_modules
+
+src/assets/model/*.mtl
+src/assets/model/*.obj
+src/assets/texture/*.jpg
+src/assets/texture/*.png
