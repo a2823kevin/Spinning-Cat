@@ -5,7 +5,8 @@
             {
                 "imports": {
                     "three": "https://unpkg.com/three@0.150.1/build/three.module.js",
-                    "three/addons/": "https://unpkg.com/three@0.150.1/examples/jsm/"
+                    "three/addons/": "https://unpkg.com/three@0.150.1/examples/jsm/", 
+                    "howler": "https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"
                 }
             }
         </script>
@@ -16,13 +17,13 @@
             setInterval(()=>{
                 $.ajax({
                     type: "GET", 
-                    url: "get_model"
-                }).done(function(data) {
-                    if (data!=undefined) {
-                        load_model(data.obj_path, data.mtl_path);
+                    url: "get_settings"
+                }).done(function(settings) {
+                    if (settings!=undefined) {
+                        change_settings(settings);
                     }
                 });
-            }, 1000);
+            }, 250);
         </script>
     </body>
 </html>
