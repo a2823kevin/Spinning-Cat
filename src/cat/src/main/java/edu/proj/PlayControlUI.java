@@ -195,14 +195,14 @@ public class PlayControlUI extends AnchorPane{
                                     modifyMtlMapPath(it.next());
                                 }
 
-                                materialPath = "../assets/model/" + FilenameUtils.getName(materialPath);
+                                materialPath = "src/assets/model/" + FilenameUtils.getName(materialPath);
                                 fos = FileUtils.openOutputStream(new File(materialPath));
                                 MtlWriter.write(mtls, fos);
                                 fos.close();
                                 newMtlFiles.add(FilenameUtils.getName(materialPath));
                             }
                             obj.setMtlFileNames(newMtlFiles);
-                            fos = FileUtils.openOutputStream(new File("../assets/model/"+modelName));
+                            fos = FileUtils.openOutputStream(new File("src/assets/model/"+modelName));
                             ObjWriter.write(obj, fos);
                             fos.close();
                             if (newMtlFiles.size()>0) {
@@ -238,7 +238,7 @@ public class PlayControlUI extends AnchorPane{
                 while (it.hasNext()) {
                     File textureFile = it.next();
                     try {
-                        fos = FileUtils.openOutputStream(new File("../assets/texture/"+textureFile.getName()));
+                        fos = FileUtils.openOutputStream(new File("src/assets/texture/"+textureFile.getName()));
                         fos.write(FileUtils.readFileToByteArray(textureFile));
                         fos.close();
                     }
@@ -319,7 +319,7 @@ public class PlayControlUI extends AnchorPane{
                 String soundType = FileNameUtils.getExtension(soundName);
                 
                 try {
-                    fos = FileUtils.openOutputStream(new File("../assets/sound/"+soundFile.getName()));
+                    fos = FileUtils.openOutputStream(new File("src/assets/sound/"+soundFile.getName()));
                     fos.write(FileUtils.readFileToByteArray(soundFile));
                     fos.close();
                     db.insertMusic(soundName.substring(0, soundName.length()-soundType.length()-1), "music/"+soundName);
