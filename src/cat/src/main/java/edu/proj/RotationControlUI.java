@@ -63,7 +63,7 @@ public class RotationControlUI extends AnchorPane{
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
                 try {
-                    int val = (int)Math.round((double)newValue);
+                    int val = (int)Math.round(newValue.doubleValue());
                     rsUnit.setText(String.format("%d rpm", val));
                     RequestSender.changeRotationalSpeed(val);
                 }

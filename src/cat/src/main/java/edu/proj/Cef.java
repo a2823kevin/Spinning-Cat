@@ -29,7 +29,7 @@ public class Cef {
     }
 
     private void initCefBuilder() {
-        builder.setInstallDir(new File("../../lib/jcef-bundle"));
+        builder.setInstallDir(new File("lib/jcef-bundle"));
         builder.setProgressHandler(new ConsoleProgressHandler());
         builder.setAppHandler(new MavenCefAppHandlerAdapter() {
                 @Override

@@ -5,29 +5,11 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class CatDB {
-    Connection connection;
+    private Connection connection;
 
     public CatDB() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
-        connection = DriverManager.getConnection("jdbc:sqlite:../assets/cat.db");
-    }
-
-    public ArrayList<String> getTableNames() throws SQLException {
-        ResultSet rs = connection.getMetaData().getTables(null, null, null, null);
-        ArrayList<String> result = new ArrayList<String>();
-        while (rs.next()!=false) {
-            String tableName = rs.getString("TABLE_NAME");
-            if (tableName.length()>7) {
-                if (tableName.substring(0, 7).equals("sqlite_")==false) {
-                    result.add(tableName);
-                }
-            }
-            else {
-                result.add(tableName);
-            }
-        }
-
-        return result;
+        connection = DriverManager.getConnection("jdbc:sqlite:src/assets/cat.db");
     }
 
     public void initTables() throws SQLException {
@@ -69,15 +51,23 @@ public class CatDB {
         stmt.close();
     }
 
-    public void insertComponentSize(String name, int width, int height) throws SQLException {
-        PreparedStatement pstmt = connection.prepareStatement(
-        "INSERT INTO component_size (name, width, height) VALUES (?, ?, ?)"
-        );
-        pstmt.setString(1, name);
-        pstmt.setInt(2, width);
-        pstmt.setInt(3, height);
-        pstmt.executeUpdate();
-        pstmt.close();
+    //query
+    public ArrayList<String> getTableNames() throws SQLException {
+        ResultSet rs = connection.getMetaData().getTables(null, null, null, null);
+        ArrayList<String> result = new ArrayList<String>();
+        while (rs.next()!=false) {
+            String tableName = rs.getString("TABLE_NAME");
+            if (tableName.length()>7) {
+                if (tableName.substring(0, 7).equals("sqlite_")==false) {
+                    result.add(tableName);
+                }
+            }
+            else {
+                result.add(tableName);
+            }
+        }
+
+        return result;
     }
 
     public Dimension getComponentSize(String name, float scalingRatio) throws SQLException {
@@ -170,6 +160,64 @@ public class CatDB {
         }
 
         return musicPath;
+    }
+
+    //insert
+    public void insertComponentSize(String name, int width, int height) throws SQLException {
+        PreparedStatement pstmt = connection.prepareStatement(
+        "INSERT INTO component_size (name, width, height) VALUES (?, ?, ?)"
+        );
+        pstmt.setString(1, name);
+        pstmt.setInt(2, width);
+        pstmt.setInt(3, height);
+        pstmt.executeUpdate();
+        pstmt.close();
+    }
+
+    public void insertModel(String name, String objPath, String mtlPath) throws SQLException {
+        if (getModelPath(name).size()!=0) {
+            deletetModel(name);
+        }
+        PreparedStatement pstmt = connection.prepareStatement(
+        "INSERT INTO model (name, obj_path, mtl_path) VALUES (?, ?, ?)"
+        );
+        pstmt.setString(1, name);
+        pstmt.setString(2, objPath);
+        pstmt.setString(3, mtlPath);
+        pstmt.executeUpdate();
+        pstmt.close();
+    }
+
+    public void insertMusic(String name, String sndPath) throws SQLException {
+        if (getMusicPath(name)!=null) {
+            deletetMusic(name);
+        }
+        PreparedStatement pstmt = connection.prepareStatement(
+        "INSERT INTO music (name, snd_path) VALUES (?, ?)"
+        );
+        pstmt.setString(1, name);
+        pstmt.setString(2, sndPath);
+        pstmt.executeUpdate();
+        pstmt.close();
+    }
+
+    //delete
+    public void deletetModel(String name) throws SQLException {
+        PreparedStatement pstmt = connection.prepareStatement(
+        "DELETE FROM model WHERE name=?"
+        );
+        pstmt.setString(1, name);
+        pstmt.executeUpdate();
+        pstmt.close();
+    }
+
+    public void deletetMusic(String name) throws SQLException {
+        PreparedStatement pstmt = connection.prepareStatement(
+        "DELETE FROM music WHERE name=?"
+        );
+        pstmt.setString(1, name);
+        pstmt.executeUpdate();
+        pstmt.close();
     }
 
     public void exit() throws SQLException {

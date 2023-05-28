@@ -66,8 +66,10 @@ let music_player = new Audio();
 music_player.loop = true;
 
 let model, music;
-let range_unit, rotational_speed=2*Math.PI, rotational_direction=-1, music_volume;
+let range_unit, rotational_speed=2*Math.PI, rotational_direction=-1;
 let rotate_time;
+
+let canvas_width, canvas_height;
 
 render();
 
@@ -89,10 +91,6 @@ function change_settings(settings) {
             }
             break;
 
-        case "display_range":
-            change_display_range(settings.display_range);
-            break;
-
         case "rotational_speed":
             if (settings.rotational_speed!=rotational_speed) {
                 change_rotational_speed(settings.rotational_speed);
@@ -105,12 +103,18 @@ function change_settings(settings) {
             }
             break;
 
-        case "music_volume":
-            if (settings.value!=music_volume) {
-                change_music_volume();
-            }
+        case "display_range":
+            change_display_range(settings.display_range);
             break;
 
+        case "volume":
+            change_volume(settings.volume);
+            break;
+
+        case "canvas":
+            change_canvas_size(settings.ratio);
+            break;
+    
         default:
             break;
     };
@@ -165,14 +169,16 @@ function change_model(obj_path, mtl_path) {
 
 function change_music(snd_path) {
     if (snd_path=="-") {
-        return;
+        music_player.src = undefined;
+        music_player.pause();
+    }
+    else {
+        music_player.src = snd_path;
+        if (pause==false&&music_player.paused) {
+            music_player.play();
+        }
     }
     music = snd_path;
-
-    music_player.src = snd_path;
-    if (do_play&&music_player.paused) {
-        music_player.play();
-    }
 };
 
 function change_display_range(value) {
@@ -188,7 +194,24 @@ function change_rotational_speed(value) {
 function change_rotational_direction(value) {
     rotational_direction = value;
 };
-function change_music_volume(){};
+function change_volume(value) {
+    music_player.volume = value;
+};
+
+function change_canvas_size(ratio) {
+    let canvas = $("canvas");
+    if (canvas_width==undefined) {
+        canvas_width = canvas.css("width");
+        canvas_width = parseFloat(canvas_width.substring(0, canvas_width.length-2));
+    }
+    if (canvas_height==undefined) {
+        canvas_height = canvas.css("height");
+        canvas_height = parseFloat(canvas_height.substring(0, canvas_height.length-2));
+    }
+
+    canvas.css("width", canvas_width*ratio);
+    canvas.css("height", canvas_height*ratio);
+}
 
 //export
 window.change_settings = change_settings;

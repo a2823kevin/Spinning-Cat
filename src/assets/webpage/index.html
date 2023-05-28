@@ -17,7 +17,7 @@
             setInterval(()=>{
                 $.ajax({
                     type: "GET", 
-                    url: "get_settings"
+                    url: "settings"
                 }).done(function(settings) {
                     if (settings!=undefined) {
                         change_settings(settings);

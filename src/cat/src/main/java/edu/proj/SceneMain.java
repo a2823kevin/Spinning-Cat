@@ -5,8 +5,10 @@ import java.awt.Component;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -16,22 +18,25 @@ import me.friwi.jcefmaven.CefInitializationException;
 import me.friwi.jcefmaven.UnsupportedPlatformException;
 
 public class SceneMain extends JFrame{
-    JPanel contentPane = new JPanel();
-    CatDB db;
-    float scalingRatio;
+    private JPanel contentPane = new JPanel();
+    private CatDB db;
+    private float scalingRatio;
 
-    Component modelUI;
-    JFXPanel rcUI;
-    JFXPanel pcUI;
+    private Component modelDisplay;
+    private JFXPanel rcUI;
+    private JFXPanel pcUI;
 
     public SceneMain(float scalingRatio, CatDB db, Cef cef, boolean runSizeRecording) throws IOException, UnsupportedPlatformException, InterruptedException, CefInitializationException {
         this.db = db;
         this.scalingRatio = scalingRatio;
+        SceneMain scene = this;
 
         contentPane.setLayout(new BorderLayout());
+        setIconImage(ImageIO.read(new URL("http://localhost/icon/maxwell.png")));
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        modelDisplay = cef.toAwtComponent();
         //record component size
         if (runSizeRecording) {
             System.out.println("staring initialize...");
@@ -69,14 +74,13 @@ public class SceneMain extends JFrame{
                 }
             }).start();
 
-            modelUI = cef.toAwtComponent();
-            modelUI.addComponentListener(new ComponentAdapter() {
+            modelDisplay.addComponentListener(new ComponentAdapter() {
                 @Override
                 public void componentResized(ComponentEvent e) {
                     componentReady[0] = true;
                 }
             });
-            contentPane.add(modelUI, BorderLayout.CENTER);
+            contentPane.add(modelDisplay, BorderLayout.CENTER);
 
             Platform.startup(new Runnable() {
                 @Override
@@ -90,7 +94,7 @@ public class SceneMain extends JFrame{
                     });
                     contentPane.add(rcUI, BorderLayout.SOUTH);
 
-                    pcUI = new PlayControlUI(1.0, db).toAwtComponent();
+                    pcUI = new PlayControlUI(1.0, db, null).toAwtComponent();
                     pcUI.addComponentListener(new ComponentAdapter() {
                         @Override
                         public void componentResized(ComponentEvent e) {
@@ -106,8 +110,7 @@ public class SceneMain extends JFrame{
 
         //general run
         else {
-            modelUI = cef.toAwtComponent();
-            contentPane.add(modelUI, BorderLayout.CENTER);
+            contentPane.add(modelDisplay, BorderLayout.CENTER);
 
             try {
                 Platform.startup(new Runnable() {
@@ -116,7 +119,7 @@ public class SceneMain extends JFrame{
                         rcUI = new RotationControlUI(scalingRatio, db).toAwtComponent();
                         contentPane.add(rcUI, BorderLayout.SOUTH);
     
-                        pcUI = new PlayControlUI(scalingRatio, db).toAwtComponent();
+                        pcUI = new PlayControlUI(scalingRatio, db, scene).toAwtComponent();
                         contentPane.add(pcUI, BorderLayout.EAST);
     
                         setSize((int)(775*scalingRatio), (int)(695*scalingRatio));
@@ -136,7 +139,7 @@ public class SceneMain extends JFrame{
                         rcUI = new RotationControlUI(scalingRatio, db).toAwtComponent();
                         contentPane.add(rcUI, BorderLayout.SOUTH);
     
-                        pcUI = new PlayControlUI(scalingRatio, db).toAwtComponent();
+                        pcUI = new PlayControlUI(scalingRatio, db, scene).toAwtComponent();
                         contentPane.add(pcUI, BorderLayout.EAST);
     
                         setSize((int)(775*scalingRatio), (int)(695*scalingRatio));
@@ -153,14 +156,23 @@ public class SceneMain extends JFrame{
     }
 
     private void recordComponentSize() throws SQLException {
-        db.insertComponentSize("model_UI", modelUI.getWidth(), modelUI.getHeight());
+        db.insertComponentSize("model_UI", modelDisplay.getWidth(), modelDisplay.getHeight());
         db.insertComponentSize("rotation_control_UI", rcUI.getWidth(), rcUI.getHeight());
         db.insertComponentSize("play_control_UI", pcUI.getWidth(), pcUI.getHeight());
     }
 
     private void resizeComponents() throws SQLException {
-        modelUI.setPreferredSize(db.getComponentSize("model_UI", scalingRatio));
+        modelDisplay.setPreferredSize(db.getComponentSize("model_UI", scalingRatio));
         rcUI.setPreferredSize(db.getComponentSize("rotation_control_UI", scalingRatio));
         pcUI.setPreferredSize(db.getComponentSize("play_control_UI", scalingRatio));
+    }
+
+    public Component getModelDisplay() {
+        return modelDisplay;
+    }
+
+    public void refreshModelDisplay() {
+        contentPane.remove(modelDisplay);
+        contentPane.add(modelDisplay, BorderLayout.CENTER);
     }
 }
