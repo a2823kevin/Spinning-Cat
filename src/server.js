@@ -5,6 +5,7 @@ let ContentType = {
     "jpg": "image/jpeg", 
     "jpeg": "image/jpeg", 
     "png": "image/png", 
+    "tga": "image/tga",
     "obj": "text/plain", 
     "mtl": "text/plain", 
     "mp3": "audio/mp3", 

@@ -18,7 +18,8 @@ public class Main {
             public void run() {
                 try {
                     RequestSender.shutdownServer();
-                } catch (IOException e) {}
+                }
+                catch (IOException e) {}
             }
         });
 
