@@ -13,18 +13,17 @@ import me.friwi.jcefmaven.UnsupportedPlatformException;
 
 public class Main {
     public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException, UnsupportedPlatformException, InterruptedException, CefInitializationException {
-        //http server
-        new Thread(new Runnable() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 try {
-                    Runtime.getRuntime().exec("node src/server.js");
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
+                    RequestSender.shutdownServer();
+                } catch (IOException e) {}
             }
-        }).start();
+        });
+
+        // web server
+        Runtime.getRuntime().exec("node src/server");
 
         //init
         CatDB db = new CatDB();

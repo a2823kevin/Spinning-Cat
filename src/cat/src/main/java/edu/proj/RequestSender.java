@@ -58,4 +58,9 @@ public class RequestSender {
         HttpPost request = new HttpPost(String.format("http://localhost/settings/canvas/%f", ratio));
         client.execute(request);
     }
+
+    public static void shutdownServer() throws IOException {
+        HttpPost request = new HttpPost("http://localhost/shutdown");
+        client.execute(request);
+    }
 }

@@ -6,12 +6,14 @@ src/cat/*
 !src/cat/src
 !src/cat/pom.xml
 
-src/assets/model/*.mtl
-src/assets/model/*.obj
+src/assets/**/*.mtl
+src/assets/**/*.obj
 src/assets/texture/*.jpg
 src/assets/texture/*.png
-src/assets/sound/*.mp3
+src/assets/**/*.mp3
 src/assets/*.db
+src/cat.jar
 
 lib/*
 !lib/README
+/nbproject/private/

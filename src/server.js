@@ -132,6 +132,10 @@ server.get("/settings", function(req, res) {
     res.end();
 })
 
+server.post("/shutdown", function(req, res) {
+    process.exit();
+})
+
 server.listen(80, function() {
     console.log("server started");
 })
